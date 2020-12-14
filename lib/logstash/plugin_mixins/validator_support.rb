@@ -2,7 +2,6 @@
 
 require 'logstash/version'
 require 'logstash/namespace'
-require 'logstash/plugin'
 
 module LogStash
   module PluginMixins

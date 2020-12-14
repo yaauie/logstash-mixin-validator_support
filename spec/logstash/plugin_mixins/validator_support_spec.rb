@@ -1,9 +1,8 @@
 # encoding: utf-8
 
-require 'logstash/plugin_mixins/validator_support'
+require "logstash/devutils/rspec/spec_helper"
 
-require 'logstash/namespace'
-require 'logstash/plugin'
+require 'logstash/plugin_mixins/validator_support'
 
 require 'securerandom'
 
