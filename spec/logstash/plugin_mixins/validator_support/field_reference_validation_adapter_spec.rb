@@ -3,6 +3,20 @@
 require 'logstash/plugin_mixins/validator_support/field_reference_validation_adapter'
 
 describe LogStash::PluginMixins::ValidatorSupport::FieldReferenceValidationAdapter do
+
+  if LOGSTASH_VERSION.start_with?('6.')
+    around(:each) do |example|
+      begin
+        strict = org.logstash.FieldReference::ParsingMode::STRICT
+        original_parsing_mode = org.logstash.FieldReference.set_parsing_mode(strict)
+
+        example.call
+      ensure
+        org.logstash.FieldReference.set_parsing_mode(original_parsing_mode)
+      end
+    end
+  end
+
   it 'is an instance of NamedValidationAdapter' do
     expect(described_class).to be_a_kind_of LogStash::PluginMixins::ValidatorSupport::NamedValidationAdapter
   end

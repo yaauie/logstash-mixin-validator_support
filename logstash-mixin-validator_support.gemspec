@@ -15,7 +15,7 @@ Gem::Specification.new do |s|
 
   s.platform = RUBY_PLATFORM
 
-  s.add_runtime_dependency 'logstash-core', '>= 5.0.0'
+  s.add_runtime_dependency 'logstash-core', '>= 6.8'
 
   s.add_development_dependency 'rspec', '~> 3.9'
   s.add_development_dependency 'logstash-devutils'

@@ -5,14 +5,11 @@ require 'logstash/plugin_mixins/validator_support'
 module LogStash
   module PluginMixins
     module ValidatorSupport
-      field_name = /[^\[\]]+/                                     # anything but brackets
-      path_fragment = /\[#{field_name}\]/                         # bracket-wrapped field name
-      field_reference_literal = /#{path_fragment}+/               # one or more path fragments
-      embedded_field_reference = /\[#{field_reference_literal}\]/ # bracket-wrapped field reference literal
-      composite_field_reference = /#{Regexp.union(path_fragment, embedded_field_reference)}+/
-
-      # anchored pattern matching either a stand-alone field name, or a composite field reference
-      field_reference_pattern = /\A#{Regexp.union(field_name,composite_field_reference)}\z/
+      def self.valid_field_reference?(candidate)
+        org.logstash.FieldReference.from(candidate) && true
+      rescue org.logstash.FieldReference::IllegalSyntaxException => e
+        false
+      end
 
       FieldReferenceValidationAdapter = NamedValidationAdapter.new(:field_reference) do |value|
         break ValidationResult.failure("Expected exactly one field reference, got `#{value.inspect}`") unless value.kind_of?(Array) && value.size <= 1
@@ -20,7 +17,7 @@ module LogStash
 
         candidate = value.first
 
-        break ValidationResult.failure("Expected a valid field reference, got `#{candidate.inspect}`") unless field_reference_pattern =~ candidate
+        break ValidationResult.failure("Expected a valid field reference, got `#{candidate.inspect}`") unless ValidatorSupport.valid_field_reference?(candidate)
 
         break ValidationResult.success(candidate)
       end
